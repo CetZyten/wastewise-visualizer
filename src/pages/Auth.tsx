@@ -17,6 +17,7 @@ const Auth: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ const Auth: React.FC = () => {
       navigate('/');
     } catch (err: any) {
       setError(err.message || 'An error occurred during sign in');
+      console.error('Sign in error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -36,10 +38,27 @@ const Auth: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null);
+    
+    // Validate input
+    if (!email || !password) {
+      setError('Email and password are required');
+      setIsLoading(false);
+      return;
+    }
+    
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       await signUp(email, password);
-      // Stay on the page as they may need to verify email
+      setSuccessMessage('Sign up successful! Please check your email for verification.');
+      // Don't navigate away automatically, let user see the success message
     } catch (err: any) {
+      console.error('Sign up error:', err);
       setError(err.message || 'An error occurred during sign up');
     } finally {
       setIsLoading(false);
@@ -72,9 +91,9 @@ const Auth: React.FC = () => {
                     </Alert>
                   )}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="signin-email">Email</Label>
                     <Input 
-                      id="email" 
+                      id="signin-email" 
                       type="email" 
                       placeholder="name@example.com" 
                       value={email}
@@ -83,9 +102,9 @@ const Auth: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="signin-password">Password</Label>
                     <Input 
-                      id="password" 
+                      id="signin-password" 
                       type="password" 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -125,10 +144,15 @@ const Auth: React.FC = () => {
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   )}
+                  {successMessage && (
+                    <Alert>
+                      <AlertDescription>{successMessage}</AlertDescription>
+                    </Alert>
+                  )}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="signup-email">Email</Label>
                     <Input 
-                      id="email" 
+                      id="signup-email" 
                       type="email" 
                       placeholder="name@example.com" 
                       value={email}
@@ -137,17 +161,19 @@ const Auth: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="signup-password">Password</Label>
                     <Input 
-                      id="password" 
+                      id="signup-password" 
                       type="password" 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      minLength={6}
                     />
+                    <p className="text-xs text-muted-foreground">Password must be at least 6 characters</p>
                   </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col gap-4">
                   <Button className="w-full" type="submit" disabled={isLoading}>
                     {isLoading ? (
                       <>
@@ -158,6 +184,11 @@ const Auth: React.FC = () => {
                       'Sign Up'
                     )}
                   </Button>
+                  {successMessage && (
+                    <p className="text-sm text-center text-muted-foreground">
+                      Check your email inbox for verification link. Once verified, you can sign in.
+                    </p>
+                  )}
                 </CardFooter>
               </form>
             </Card>
