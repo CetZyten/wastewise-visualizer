@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,7 +62,10 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for our waste classifier
+				success: 'hsl(var(--success))',
+				info: 'hsl(var(--info))',
+				warning: 'hsl(var(--warning))',
+				danger: 'hsl(var(--danger))',
 				teal: {
 					50: '#ECFDF5',
 					100: '#D1FAE5',

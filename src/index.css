@@ -113,6 +113,25 @@
   }
 }
 
+/* Add text color utility classes for our notification colors */
+@layer utilities {
+  .text-success {
+    color: hsl(var(--success));
+  }
+  
+  .text-info {
+    color: hsl(var(--info));
+  }
+  
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  
+  .text-danger {
+    color: hsl(var(--danger));
+  }
+}
+
 /* Glass morphism components */
 .glass {
   @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 shadow-lg dark:bg-black dark:bg-opacity-20 dark:border-gray-800 dark:border-opacity-50;
