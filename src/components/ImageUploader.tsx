@@ -1,139 +1,183 @@
 
 import React, { useState, useRef } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ImageUploaderProps {
-  onImageUpload: (image: File) => void;
+  onImageSelected: (file: File) => void;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleImageUpload(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      handleImageUpload(e.target.files[0]);
-    }
-  };
-
-  const handleImageUpload = (file: File) => {
-    // Check if file is an image
-    if (!file.type.match('image.*')) {
-      toast.error('Please upload an image file (jpeg, png, etc)');
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to upload and classify images",
+        variant: "destructive"
+      });
       return;
     }
 
-    // Check file size (limit to 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size should be less than 5MB');
-      return;
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelected(e.dataTransfer.files[0]);
     }
+  };
 
-    setIsUploading(true);
+  const validateFile = (file: File): boolean => {
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file (JPEG, PNG, etc.)');
+      return false;
+    }
     
-    // Create a preview URL
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Simulate upload delay
-    setTimeout(() => {
-      onImageUpload(file);
-      setIsUploading(false);
-    }, 1000);
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File size exceeds the 5MB limit');
+      return false;
+    }
+    
+    setError(null);
+    return true;
   };
 
-  const clearImage = () => {
-    setPreview(null);
+  const handleFileSelected = (file: File) => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to upload and classify images",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (validateFile(file)) {
+      // Create preview URL
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      
+      // Call the callback with the file
+      onImageSelected(file);
+      
+      toast({
+        title: "Image uploaded successfully",
+        description: "Analyzing your waste...",
+        variant: "default",
+        className: "toast-success"
+      });
+      
+      // Clean up
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to upload and classify images",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    fileInputRef.current?.click();
+  };
+
+  const removeImage = () => {
+    setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto">
-      {!preview ? (
-        <div 
-          className={`upload-area bg-background hover:bg-muted/50 ${isDragging ? 'dragging' : ''} animate-scale-up`}
+    <div className="w-full max-w-2xl mx-auto mt-8 animate-fade-in">
+      {!previewUrl ? (
+        <div
+          className={`upload-area ${isDragging ? 'dragging' : ''} border-foreground/20 dark:border-foreground/10`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
         >
-          <input 
-            type="file" 
-            accept="image/*" 
+          <input
+            type="file"
             ref={fileInputRef}
-            onChange={handleFileInputChange}
+            onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0])}
+            accept="image/*"
             className="hidden"
           />
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="p-4 bg-primary/10 rounded-full">
-              <Upload className="h-8 w-8 text-primary" />
+          
+          <div className="flex flex-col items-center justify-center">
+            <div className="bg-primary/10 p-4 rounded-full mb-4">
+              <Upload className="h-6 w-6 text-primary" />
             </div>
-            <div>
-              <h3 className="text-lg font-medium">Upload an image of waste</h3>
-              <p className="text-sm text-muted-foreground mt-1">Drag and drop or click to browse</p>
-              <p className="text-xs text-muted-foreground mt-1">Supports JPG, PNG, WEBP (max 5MB)</p>
-            </div>
-            <Button className="mt-4 bg-primary hover:bg-primary/90 text-white">
-              Select Image
+            <h3 className="text-lg font-medium mb-2">Upload an image of your waste</h3>
+            <p className="text-sm text-muted-foreground mb-4 text-center max-w-md">
+              Drag and drop your image here, or click the button below to select a file
+            </p>
+            <Button onClick={triggerFileInput} disabled={!user}>
+              <ImageIcon className="mr-2 h-4 w-4" />
+              {isMobile ? "Take Photo" : "Select Image"}
             </Button>
+            {!user && (
+              <p className="text-sm text-muted-foreground mt-4">
+                Please sign in to upload and classify images
+              </p>
+            )}
           </div>
         </div>
       ) : (
-        <div className="relative rounded-lg overflow-hidden animate-scale-up">
-          <img 
-            src={preview} 
-            alt="Preview" 
-            className="w-full h-64 object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-          <div className="absolute bottom-4 left-4 right-4 flex justify-between">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="bg-white text-black border-white hover:bg-white/80"
-              onClick={clearImage}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Clear
-            </Button>
-            
-            <Button 
-              size="sm" 
-              className="bg-primary hover:bg-primary/90 text-white"
-              disabled={isUploading}
-            >
-              {isUploading ? 'Processing...' : 'Classify Waste'}
-            </Button>
+        <div className="relative">
+          <div className="rounded-lg overflow-hidden shadow-lg">
+            <img 
+              src={previewUrl} 
+              alt="Preview" 
+              className="w-full h-auto object-contain max-h-[60vh]" 
+            />
           </div>
+          <Button 
+            variant="destructive" 
+            size="icon"
+            className="absolute top-2 right-2 rounded-full shadow-lg"
+            onClick={removeImage}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
+      )}
+      
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
     </div>
   );
