@@ -8,10 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ImageUploaderProps {
-  onImageSelected: (file: File) => void;
+  onImageUpload: (file: File) => void;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +84,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected }) => {
       setPreviewUrl(objectUrl);
       
       // Call the callback with the file
-      onImageSelected(file);
+      onImageUpload(file);
       
       toast({
         title: "Image uploaded successfully",
