@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Leaf, LogIn, LogOut, User } from 'lucide-react';
+import { Leaf, LogIn, LogOut, User, Menu, X, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,28 +12,44 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut, loading } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
+
+  const showBackButton = location.pathname === '/auth';
   
   return (
     <header className="w-full py-4 px-6 md:px-10 sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border animate-slide-down">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2 group">
-          <div className="bg-primary/10 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
-            <Leaf className="h-5 w-5 text-primary animate-float" />
-          </div>
-          <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">EcoSort</span>
-        </Link>
+        {showBackButton ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/')}
+            className="mr-2"
+            aria-label="Back to home"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+        ) : (
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className="bg-primary/10 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <Leaf className="h-5 w-5 text-primary animate-float" />
+            </div>
+            <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">EcoSort</span>
+          </Link>
+        )}
         
-        <nav className="hidden md:flex space-x-8 items-center">
+        <nav className={`hidden md:flex space-x-8 items-center`}>
           {[
             { name: 'Home', path: '/' },
             { name: 'About', path: '/about' }
@@ -54,6 +70,9 @@ const Header: React.FC = () => {
         </nav>
         
         <div className="flex items-center space-x-4">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+          
           {loading ? (
             <Skeleton className="h-10 w-24" />
           ) : user ? (
@@ -106,10 +125,45 @@ const Header: React.FC = () => {
           )}
         </div>
         
+        {/* Mobile Menu Button */}
         <div className="flex md:hidden">
-          {/* Mobile menu button would go here */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden p-4 bg-background border-b border-border">
+          <nav className="flex flex-col space-y-4">
+            {[
+              { name: 'Home', path: '/' },
+              { name: 'About', path: '/about' }
+            ].map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`text-base font-medium transition-colors duration-300 ${
+                  location.pathname === item.path ? 'text-primary' : 'text-foreground/70 hover:text-foreground'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

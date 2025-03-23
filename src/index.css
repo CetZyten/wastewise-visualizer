@@ -43,6 +43,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --success: 142 76% 36%;
+    --info: 221 83% 53%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
   }
 
   .dark {
@@ -81,6 +86,29 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --success: 142 76% 45%;
+    --info: 221 83% 65%;
+    --warning: 38 92% 60%;
+    --danger: 0 70% 50%;
+  }
+}
+
+@layer utilities {
+  .text-success {
+    color: hsl(var(--success));
+  }
+  
+  .text-info {
+    color: hsl(var(--info));
+  }
+  
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  
+  .text-danger {
+    color: hsl(var(--danger));
   }
 }
 
@@ -105,7 +133,7 @@
 
 /* Glass morphism components */
 .glass {
-  @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 shadow-lg;
+  @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 shadow-lg dark:bg-black dark:bg-opacity-20 dark:border-gray-800 dark:border-opacity-50;
 }
 
 .glass-card {
@@ -153,4 +181,32 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-primary bg-opacity-70;
+}
+
+/* Notification colors */
+.toast-success {
+  @apply bg-transparent border-green-600 text-success;
+}
+
+.toast-info {
+  @apply bg-transparent text-info border-blue-600;
+}
+
+.toast-warning {
+  @apply bg-transparent text-warning border-yellow-600;
+}
+
+.toast-error {
+  @apply bg-transparent text-danger border-red-600;
+}
+
+/* Responsive helpers */
+@media (max-width: 640px) {
+  .glass-card {
+    @apply rounded-lg;
+  }
+  
+  .tabs-compact .tab {
+    @apply py-1 px-2;
+  }
 }
