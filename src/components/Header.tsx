@@ -30,7 +30,7 @@ const Header: React.FC = () => {
           <div className="bg-primary/10 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
             <Leaf className="h-5 w-5 text-primary animate-float" />
           </div>
-          <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">WasteWise</span>
+          <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">EcoSort</span>
         </Link>
         
         <nav className="hidden md:flex space-x-8 items-center">

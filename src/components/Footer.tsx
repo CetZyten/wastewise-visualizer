@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
                 <Leaf className="h-5 w-5 text-primary" />
               </div>
               <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">
-                WasteWise
+                EcoSort
               </span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground max-w-md">
@@ -73,7 +73,7 @@ const Footer: React.FC = () => {
         
         <div className="border-t border-border mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} WasteWise. All rights reserved.
+            © {new Date().getFullYear()} EcoSort. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-300">

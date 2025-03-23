@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Recycle, Leaf, Info, AlertCircle, Droplet, BarChart3 } from 'lucide-react';
 import Header from '@/components/Header';
@@ -22,7 +21,7 @@ const About: React.FC = () => {
           <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-block mb-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium animate-fade-in">
-                About WasteWise
+                About EcoSort
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-slide-up">
                 Our Mission for a <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-600">Sustainable Future</span>
@@ -41,7 +40,7 @@ const About: React.FC = () => {
               <div className="animate-slide-up">
                 <h2 className="text-3xl font-bold mb-6">Our Story</h2>
                 <p className="text-muted-foreground mb-4">
-                  WasteWise was born from a simple observation: most people want to recycle correctly, but often don't know how. The complexity of recycling systems and the lack of clear information leads to contamination in recycling streams and valuable materials ending up in landfills.
+                  EcoSort was born from a simple observation: most people want to recycle correctly, but often don't know how. The complexity of recycling systems and the lack of clear information leads to contamination in recycling streams and valuable materials ending up in landfills.
                 </p>
                 <p className="text-muted-foreground mb-4">
                   Our team of environmental scientists, AI specialists, and developers came together with a shared mission: to make waste classification accessible to everyone and provide clear, actionable recycling information.
@@ -86,7 +85,7 @@ const About: React.FC = () => {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Our Technology</h2>
               <p className="text-muted-foreground max-w-3xl mx-auto">
-                WasteWise uses advanced machine learning to accurately classify waste materials
+                EcoSort uses advanced machine learning to accurately classify waste materials
               </p>
             </div>
             

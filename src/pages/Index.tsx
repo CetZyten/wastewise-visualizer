@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Recycle, Leaf, Trash2, Upload } from 'lucide-react';
 import Header from '@/components/Header';
@@ -126,7 +127,7 @@ const Index: React.FC = () => {
         <section className="py-16 px-6 bg-muted/30">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Why Use WasteWise?</h2>
+              <h2 className="text-3xl font-bold mb-4">Why Use EcoSort?</h2>
               <p className="text-muted-foreground max-w-3xl mx-auto">
                 Our platform combines AI-powered waste classification with educational resources to help you make environmentally responsible decisions
               </p>
