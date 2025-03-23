@@ -4,7 +4,6 @@ import { Recycle, Clock, Info } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import InfoCard from './InfoCard';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export interface ClassificationResult {
   type: string;
@@ -23,7 +22,6 @@ const WasteClassifier: React.FC<WasteClassifierProps> = ({ imageFile }) => {
   const [isClassifying, setIsClassifying] = useState(false);
   const [result, setResult] = useState<ClassificationResult | null>(null);
   const [progressValue, setProgressValue] = useState(0);
-  const isMobile = useIsMobile();
 
   // Simulated classification for demo purposes
   React.useEffect(() => {
@@ -73,9 +71,9 @@ const WasteClassifier: React.FC<WasteClassifierProps> = ({ imageFile }) => {
   if (!imageFile) return null;
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8 md:mt-12 animate-slide-up px-4 md:px-0">
+    <div className="w-full max-w-3xl mx-auto mt-12 animate-slide-up">
       {isClassifying ? (
-        <div className="glass-card p-4 md:p-8 text-center animate-fade-in">
+        <div className="glass-card p-8 text-center animate-fade-in">
           <h3 className="text-xl font-semibold mb-4">Analyzing your waste...</h3>
           <Progress value={progressValue} className="h-2 mb-4" />
           <p className="text-sm text-muted-foreground">
@@ -84,10 +82,10 @@ const WasteClassifier: React.FC<WasteClassifierProps> = ({ imageFile }) => {
         </div>
       ) : result ? (
         <div className="glass-card overflow-hidden animate-scale-up">
-          <div className="p-4 md:p-6 bg-gradient-to-r from-primary/10 to-transparent border-b">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <h2 className="text-xl md:text-2xl font-semibold">{result.type}</h2>
-              <div className="flex items-center space-x-2 px-3 py-1 bg-background rounded-full text-sm self-start">
+          <div className="p-6 bg-gradient-to-r from-primary/10 to-transparent border-b">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">{result.type}</h2>
+              <div className="flex items-center space-x-2 px-3 py-1 bg-background rounded-full text-sm">
                 <div 
                   className={`w-3 h-3 rounded-full ${result.recyclable ? 'bg-green-500' : 'bg-orange-500'} animate-pulse-slow`}
                 />
@@ -96,7 +94,7 @@ const WasteClassifier: React.FC<WasteClassifierProps> = ({ imageFile }) => {
             </div>
             <div className="flex items-center mt-2 text-sm text-muted-foreground">
               <span className="font-medium">Confidence:</span>
-              <div className="ml-2 w-24 sm:w-32 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="ml-2 w-32 h-1.5 bg-muted rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${result.confidence > 90 ? 'bg-green-500' : result.confidence > 70 ? 'bg-yellow-500' : 'bg-orange-500'}`}
                   style={{ width: `${result.confidence}%` }}
@@ -106,19 +104,19 @@ const WasteClassifier: React.FC<WasteClassifierProps> = ({ imageFile }) => {
             </div>
           </div>
           
-          <Tabs defaultValue="instructions" className="p-4 md:p-6">
-            <TabsList className="mb-4 w-full justify-between">
-              <TabsTrigger value="instructions" className="flex items-center text-xs sm:text-sm">
-                <Recycle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className={isMobile ? "sr-only sm:not-sr-only" : ""}>Recycling</span>
+          <Tabs defaultValue="instructions" className="p-6">
+            <TabsList className="mb-4">
+              <TabsTrigger value="instructions" className="flex items-center">
+                <Recycle className="h-4 w-4 mr-2" />
+                Recycling
               </TabsTrigger>
-              <TabsTrigger value="info" className="flex items-center text-xs sm:text-sm">
-                <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className={isMobile ? "sr-only sm:not-sr-only" : ""}>Details</span>
+              <TabsTrigger value="info" className="flex items-center">
+                <Info className="h-4 w-4 mr-2" />
+                Details
               </TabsTrigger>
-              <TabsTrigger value="tips" className="flex items-center text-xs sm:text-sm">
-                <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className={isMobile ? "sr-only sm:not-sr-only" : ""}>Tips</span>
+              <TabsTrigger value="tips" className="flex items-center">
+                <Clock className="h-4 w-4 mr-2" />
+                Tips
               </TabsTrigger>
             </TabsList>
             
