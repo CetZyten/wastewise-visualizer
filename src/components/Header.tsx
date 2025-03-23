@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, Menu, X } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Leaf, Menu, X, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/context/AuthContext";
@@ -12,6 +12,8 @@ const Header: React.FC = () => {
   const isMobile = useIsMobile();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/auth';
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -22,21 +24,39 @@ const Header: React.FC = () => {
     navigate('/');
   };
 
+  const goBack = () => {
+    navigate('/');
+  };
+
   return (
     <header className="w-full py-4 px-6 sticky top-0 bg-background/80 backdrop-blur-md z-50 border-b border-border">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2 group">
-          <div className="bg-primary/10 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
-            <Leaf className="h-5 w-5 text-primary animate-float" />
+        {isAuthPage ? (
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={goBack}
+              className="mr-2 hover:bg-background hover:text-primary"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <span className="text-lg font-medium">Back to Home</span>
           </div>
-          <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">EcoSort</span>
-        </Link>
+        ) : (
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className="bg-primary/10 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <Leaf className="h-5 w-5 text-primary animate-float" />
+            </div>
+            <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-700">EcoSort</span>
+          </Link>
+        )}
         
         <nav className="hidden md:flex space-x-8 items-center">
-          <Link to="/" className="text-foreground/80 hover:text-primary transition-colors duration-300">
+          <Link to="/" className="text-foreground hover:text-primary transition-colors duration-300">
             Home
           </Link>
-          <Link to="/about" className="text-foreground/80 hover:text-primary transition-colors duration-300">
+          <Link to="/about" className="text-foreground hover:text-primary transition-colors duration-300">
             About
           </Link>
           <div className="ml-2">
@@ -57,7 +77,7 @@ const Header: React.FC = () => {
               size="icon"
               aria-label="Toggle Menu"
               onClick={toggleMenu}
-              className="md:hidden"
+              className="md:hidden hover:bg-background hover:text-primary"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -71,14 +91,14 @@ const Header: React.FC = () => {
           <div className="flex flex-col space-y-4">
             <Link 
               to="/" 
-              className="text-lg py-3 px-4 hover:bg-muted rounded-md transition-colors"
+              className="text-lg py-3 px-4 hover:bg-primary/10 hover:text-primary rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/about" 
-              className="text-lg py-3 px-4 hover:bg-muted rounded-md transition-colors"
+              className="text-lg py-3 px-4 hover:bg-primary/10 hover:text-primary rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               About

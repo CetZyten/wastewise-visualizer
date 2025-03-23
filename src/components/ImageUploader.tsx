@@ -164,12 +164,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
             />
           </div>
           <Button 
-            variant="destructive" 
+            variant="outline" 
             size="icon"
-            className="absolute top-2 right-2 rounded-full shadow-lg"
+            className="absolute top-2 right-2 rounded-full shadow-lg bg-background/80 backdrop-blur-sm border-white/40 hover:bg-background"
             onClick={removeImage}
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 text-foreground" />
           </Button>
         </div>
       )}
