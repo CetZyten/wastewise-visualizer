@@ -18,6 +18,11 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, signOut, loading } = useAuth();
   
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+  
   return (
     <header className="w-full py-4 px-6 md:px-10 sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border animate-slide-down">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -81,10 +86,7 @@ const Header: React.FC = () => {
                 </div>
                 <DropdownMenuItem
                   className="cursor-pointer"
-                  onClick={() => {
-                    signOut();
-                    navigate('/');
-                  }}
+                  onClick={handleSignOut}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   <span>Sign out</span>

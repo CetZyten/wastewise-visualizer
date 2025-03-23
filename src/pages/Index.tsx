@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Recycle, Leaf, Trash2, Upload } from 'lucide-react';
 import Header from '@/components/Header';
@@ -7,9 +6,13 @@ import ImageUploader from '@/components/ImageUploader';
 import WasteClassifier from '@/components/WasteClassifier';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Index: React.FC = () => {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleImageUpload = (file: File) => {
     setUploadedImage(file);
@@ -38,14 +41,20 @@ const Index: React.FC = () => {
               <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-slide-up" style={{ animationDelay: '100ms' }}>
                 Upload an image of waste and get instant classification, recycling instructions, and sustainability tips.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '200ms' }}>
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                  Get Started
-                </Button>
-                <Button variant="outline" size="lg">
-                  Learn More
-                </Button>
-              </div>
+              {!user && (
+                <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '200ms' }}>
+                  <Button 
+                    size="lg" 
+                    className="bg-primary hover:bg-primary/90 text-white"
+                    onClick={() => navigate('/auth')}
+                  >
+                    Get Started
+                  </Button>
+                  <Button variant="outline" size="lg">
+                    Learn More
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -90,8 +99,25 @@ const Index: React.FC = () => {
             
             <div className="glass-card py-10 px-6 md:p-10">
               <h3 className="text-2xl font-semibold text-center mb-8">Upload Your Waste Image</h3>
-              <ImageUploader onImageUpload={handleImageUpload} />
-              <WasteClassifier imageFile={uploadedImage} />
+              {user ? (
+                <>
+                  <ImageUploader onImageUpload={handleImageUpload} />
+                  <WasteClassifier imageFile={uploadedImage} />
+                </>
+              ) : (
+                <div className="text-center p-8 bg-muted/20 rounded-lg">
+                  <h4 className="text-xl font-medium mb-4">Sign in to upload images</h4>
+                  <p className="text-muted-foreground mb-6">
+                    You need to create an account or sign in to use the waste classification feature.
+                  </p>
+                  <Button 
+                    onClick={() => navigate('/auth')} 
+                    className="bg-primary hover:bg-primary/90 text-white"
+                  >
+                    Sign In / Sign Up
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -159,28 +185,34 @@ const Index: React.FC = () => {
           </div>
         </section>
         
-        {/* CTA Section */}
-        <section className="py-20 px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="glass-card p-10 relative overflow-hidden">
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className="absolute -top-1/2 -right-1/4 w-2/3 h-full bg-gradient-to-b from-primary/5 to-transparent rounded-full blur-3xl transform rotate-12 opacity-50" />
-              </div>
-              
-              <div className="relative z-10">
-                <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-                  <p className="text-lg text-muted-foreground mb-8">
-                    Start classifying your waste today and join the movement toward a cleaner, more sustainable future.
-                  </p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                    Get Started
-                  </Button>
+        {/* CTA Section - Only show for non-authenticated users */}
+        {!user && (
+          <section className="py-20 px-6">
+            <div className="max-w-5xl mx-auto">
+              <div className="glass-card p-10 relative overflow-hidden">
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                  <div className="absolute -top-1/2 -right-1/4 w-2/3 h-full bg-gradient-to-b from-primary/5 to-transparent rounded-full blur-3xl transform rotate-12 opacity-50" />
+                </div>
+                
+                <div className="relative z-10">
+                  <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
+                    <p className="text-lg text-muted-foreground mb-8">
+                      Start classifying your waste today and join the movement toward a cleaner, more sustainable future.
+                    </p>
+                    <Button 
+                      size="lg" 
+                      className="bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => navigate('/auth')}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
       
       <Footer />
