@@ -53,13 +53,14 @@ const About: React.FC = () => {
               <div className="glass-card p-6 animate-scale-up">
                 <div className="relative aspect-video rounded-lg overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-sage-400/20 flex items-center justify-center">
-                    <Leaf className="h-16 w-16 text-primary/40 animate-float" />
+                    {/* <Leaf className="h-16 w-16 text-primary/40 animate-float" /> */}
+                    <img src="https://i.pinimg.com/736x/7f/95/29/7f9529f25aeb58aafca7845c05038236.jpg" alt="logo" />
                   </div>
                 </div>
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-medium text-sm mb-1">Founded</h4>
-                    <p className="text-2xl font-bold">2023</p>
+                    <p className="text-2xl font-bold">2025</p>
                   </div>
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-medium text-sm mb-1">Materials Classified</h4>
