@@ -95,6 +95,7 @@
 }
 
 @layer utilities {
+  /* Text color utilities for notifications */
   .text-success {
     color: hsl(var(--success));
   }
